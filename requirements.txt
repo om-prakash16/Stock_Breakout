@@ -1,0 +1,11 @@
+requests
+pandas
+fastparquet
+pyarrow
+yfinance
+pandas_market_calendars
+tqdm
+tqdm
+plotly
+fastapi
+uvicorn
