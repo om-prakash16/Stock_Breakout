@@ -36,8 +36,12 @@ class BreakoutService:
 
     def scan_universe(self, max_workers=60) -> pd.DataFrame:
         if not self.universe_path.exists():
-            print("Universe not found.")
-            return pd.DataFrame()
+            print("Universe not found. Attempting to build universe...")
+            from src.universe.builder import build_universe
+            if not build_universe():
+                print("Failed to build universe. Aborting scan.")
+                return pd.DataFrame()
+            print("Universe built successfully.")
             
         universe = pd.read_parquet(self.universe_path)
         print(f"Scanning {len(universe)} stocks for breakouts...")

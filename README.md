@@ -87,6 +87,8 @@ npm install  # (Only needed once)
 npm run dev
 ```
 
+> **Note**: On the very first run, the backend will automatically download the stock universe list (NSE/BSE). This may take 1-2 minutes. Please be patient if the "Total Scanned" count initially shows 0.
+
 *Access the dashboard at http://localhost:3000*
 
 ## Architecture
