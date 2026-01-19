@@ -46,6 +46,9 @@ A high-performance, real-time stock breakout detection system for NSE and BSE ma
 If you prefer to run everything manually without scripts, follow these steps. You can use **Command Prompt (cmd)**, **PowerShell**, or the **VS Code Integrated Terminal**.
 
 ### 1. Prerequisite: Setup Environment
+**Recommended: Python 3.10, 3.11, or 3.12**
+*(Python 3.13 is supported but may require installing pre-release wheels for some libraries)*
+
 First, create the virtual environment and install dependencies.
 
 **Command Prompt / PowerShell / VS Code:**
