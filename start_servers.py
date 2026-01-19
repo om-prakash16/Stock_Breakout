@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 import sys
+from pathlib import Path
 
 def start_backend():
     print("Starting Backend (Uvicorn)...")
@@ -39,10 +40,56 @@ def cleanup_ports():
                         subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except subprocess.CalledProcessError:
             pass # No process found
+
+def check_and_seed_data():
+    """
+    Checks if essential data exists. If not, runs initial data generation.
+    """
+    backend_dir = os.path.join(os.getcwd(), "backend")
+    processed_dir = Path(backend_dir) / "data" / "processed"
+    universe_file = processed_dir / "universe.parquet"
+
+    if not universe_file.exists():
+        print("\n[!] Initial Setup: Data not found.")
+        print("--- Step 1: Building Stock Universe (This is quick)...")
+        
+        # Run Phase 1 (Universe) Synchronously
+        try:
+            subprocess.run(
+                [sys.executable, "main.py", "--mode", "universe"],
+                cwd=backend_dir,
+                check=True
+            )
+            print("--- Universe built successfully.")
+        except subprocess.CalledProcessError:
+            print("[x] Failed to build universe. Application may be empty.")
+            return
+
+        print("\n--- Step 2: Starting Background Historical Data Fetch...")
+        print("    (This creates a background process. Data will populate in 5-10 mins.)")
+        print("    (You can use the dashboard immediately.)")
+        
+        # Run Phase 2 (History) Asynchronously
+        # We use Popen to let it run in background without blocking this script
+        creation_flags = 0
+        if os.name == 'nt':
+            # Detach process on Windows (CREATE_NEW_CONSOLE = 0x00000010)
+            creation_flags = 0x00000010
+            
+        subprocess.Popen(
+            [sys.executable, "main.py", "--mode", "history"],
+            cwd=backend_dir,
+            creationflags=creation_flags
+        )
+        print("--- Background fetch initiated.\n")
+    else:
+        print("[+] Data checks passed. Starting servers...\n")
             
 def main():
     cleanup_ports()
     time.sleep(2) # Wait for release
+    
+    check_and_seed_data()
     
     backend = start_backend()
     frontend = start_frontend()
