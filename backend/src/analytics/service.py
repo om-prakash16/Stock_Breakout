@@ -44,6 +44,30 @@ class BreakoutService:
             print("Universe built successfully.")
             
         universe = pd.read_parquet(self.universe_path)
+        
+        # Check if we have ANY historical data
+        # If cache directory is empty, we must fetch data first
+        from src.historical.service import HistoricalDataService
+        hist_service = HistoricalDataService()
+        
+        # Basic check: do we have at least 10 parquet files?
+        has_data = False
+        try:
+             # Check distinct files recursively or just check if NSE/BSE folders have content
+             nse_dir = hist_service.cache.base_path / "NSE"
+             if nse_dir.exists() and any(nse_dir.iterdir()):
+                 has_data = True
+        except:
+            pass
+            
+        if not has_data:
+            print("No historical data found. Starting initial data download (This may take 5-10 minutes)...")
+            try:
+                hist_service.update_all(max_workers=self.MAX_WORKERS)
+                print("Initial data download complete.")
+            except Exception as e:
+                print(f"Data download failed: {e}")
+        
         print(f"Scanning {len(universe)} stocks for breakouts...")
         
         all_breakouts = []
