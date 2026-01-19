@@ -19,6 +19,9 @@ A high-performance, real-time stock breakout detection system for NSE and BSE ma
     *   Dismiss (Hide) functionality for noise reduction.
     *   Recovery mode for hidden stocks.
 *   **Cross-Platform**: Easy setup scripts for Windows and Mac/Linux.
+*   **Performance**:
+    *   **Optimized Threading**: Smart resource management (`max_workers=20`) to prevent crashes.
+    *   **WebSocket Ready**: Server supports `/ws` endpoint for push updates.
 
 ## Tech Stack
 
@@ -40,26 +43,48 @@ A high-performance, real-time stock breakout detection system for NSE and BSE ma
 
 ## Manual Run (For Developers)
 
-If you prefer running via terminal/VS Code manually:
+If you prefer to run everything manually without scripts, follow these steps. You can use **Command Prompt (cmd)**, **PowerShell**, or the **VS Code Integrated Terminal**.
 
-**Backend:**
+### 1. Prerequisite: Setup Environment
+First, create the virtual environment and install dependencies.
+
+**Command Prompt / PowerShell / VS Code:**
 ```bash
-# Windows
-cd backend
-..\venv\Scripts\activate
-python -m uvicorn src.api.main:app --reload --port 8000
+# Create venv in root
+python -m venv venv
 
-# Mac/Linux
-cd backend
-source ../venv/bin/activate
-uvicorn src.api.main:app --reload --port 8000
+# Activate venv
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+# Install Dependencies
+pip install -r backend/requirements.txt
 ```
 
-**Frontend:**
+### 2. Start Backend (Terminal 1)
+Open a new terminal window:
+```bash
+# Activate venv first!
+venv\Scripts\activate
+
+# Navigate to backend
+cd backend
+
+# Run Server
+python -m uvicorn src.api.main:app --reload --port 8000
+```
+
+### 3. Start Frontend (Terminal 2)
+Open a second terminal window:
 ```bash
 cd frontend
+npm install  # (Only needed once)
 npm run dev
 ```
+
+*Access the dashboard at http://localhost:3000*
 
 ## Architecture
 

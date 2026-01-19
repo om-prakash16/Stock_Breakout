@@ -8,6 +8,8 @@ from src.analytics.calculator import BreakoutCalculator
 from src.historical.store import HistoricalDataCache
 
 class BreakoutService:
+    MAX_WORKERS = 20 # Safe default for most PCs
+
     def __init__(self):
         self.config = BreakoutConfig()
         self.calculator = BreakoutCalculator(self.config)
