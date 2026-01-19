@@ -27,7 +27,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    // Don't show full loader on polling, only initial
+    // Initial Fetch
     async function fetchData() {
       if (!status) setLoading(true);
 
@@ -46,8 +46,53 @@ export default function Dashboard() {
     }
 
     fetchData();
-    const interval = setInterval(fetchData, 30000); // Poll every 30s
-    return () => clearInterval(interval);
+
+    // WebSocket Connection
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//localhost:8000/ws`; // Assuming backend is on 8000
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout;
+
+    function connectWs() {
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log("Connected to Real-Time Feed");
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'update') {
+            // Re-fetch data on update signal
+            fetchData();
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("Feed disconnected, retrying...");
+        reconnectTimeout = setTimeout(connectWs, 3000);
+      };
+
+      ws.onerror = (err) => {
+        console.error("WS Error", err);
+        ws?.close();
+      };
+    }
+
+    connectWs();
+
+    // Keep a slow poll just in case WS fails silently (fail-safe)
+    const interval = setInterval(fetchData, 60000); // Poll every 60s as backup
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(reconnectTimeout);
+      ws?.close();
+    };
   }, [selectedExchange]);
 
   // Helper to filter breakouts by type, direction, and search query

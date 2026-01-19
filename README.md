@@ -21,7 +21,7 @@ A high-performance, real-time stock breakout detection system for NSE and BSE ma
 *   **Cross-Platform**: Easy setup scripts for Windows and Mac/Linux.
 *   **Performance**:
     *   **Optimized Threading**: Smart resource management (`max_workers=20`) to prevent crashes.
-    *   **WebSocket Ready**: Server supports `/ws` endpoint for push updates.
+    *   **WebSocket Architecture**: Frontend connects to `/ws` for instant zero-latency updates, replacing heavy polling.
 
 ## Tech Stack
 
