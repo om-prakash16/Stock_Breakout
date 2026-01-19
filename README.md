@@ -76,7 +76,7 @@ venv\Scripts\activate
 cd backend
 
 # Run Server
-python -m uvicorn src.api.main:app --reload --port 8000
+python -m uvicorn backend.src.api.main:app --reload --port 8000
 ```
 
 ### 3. Start Frontend (Terminal 2)
