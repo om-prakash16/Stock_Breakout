@@ -69,19 +69,23 @@ class BreakoutService:
         # Consolidate
         if not all_breakouts:
             print("No breakouts detected.")
-            return pd.DataFrame()
+            # Don't return early; proceed to save empty dataframe so API doesn't 404
             
         breakout_df = pd.DataFrame(all_breakouts)
         
         # Sort
-        # Custom sort by Breakout Type Priority then Pct
-        # Map type to priority
-        breakout_df['priority'] = breakout_df['breakout_type'].map(self.config.PRIORITY)
-        
-        breakout_df = breakout_df.sort_values(
-            by=['priority', 'breakout_pct'], 
-            ascending=[True, False]
-        ).drop(columns=['priority'])
+        if not breakout_df.empty:
+            # Custom sort by Breakout Type Priority then Pct
+            # Map type to priority
+            breakout_df['priority'] = breakout_df['breakout_type'].map(self.config.PRIORITY)
+            
+            breakout_df = breakout_df.sort_values(
+                by=['priority', 'breakout_pct'], 
+                ascending=[True, False]
+            ).drop(columns=['priority'])
+        else:
+             # Ensure schema is present for empty parquet if needed, or just save empty
+             pass
         
         # Save
         # Atomic Save
