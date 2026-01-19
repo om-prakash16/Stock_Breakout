@@ -5,9 +5,10 @@ import sys
 
 def start_backend():
     print("Starting Backend (Uvicorn)...")
+    backend_dir = os.path.join(os.getcwd(), "backend")
     return subprocess.Popen(
         [sys.executable, "-m", "uvicorn", "src.api.main:app", "--reload", "--port", "8000"],
-        cwd=os.getcwd(),
+        cwd=backend_dir,
         shell=True
     )
 

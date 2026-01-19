@@ -32,7 +32,7 @@ call venv\Scripts\activate
 
 echo.
 echo [2/3] Installing Python Dependencies...
-pip install -r requirements.txt
+pip install -r backend\requirements.txt
 IF %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Failed to install Python dependencies.
     pause

@@ -29,21 +29,47 @@ A high-performance, real-time stock breakout detection system for NSE and BSE ma
 ## Quick Start
 
 ### Windows
-1.  Run **`setup_windows.bat`** (First time setup).
-2.  Run **`run_windows.bat`** (To start the app).
+1.  Run **`setup_windows.bat`** (First time setup - installs dependencies).
+2.  Run **`run_windows.bat`** (Starts the servers).
 
 ### Mac / Linux
 1.  Run `sh setup_mac.sh` (First time setup).
-2.  Run `sh run_mac.sh` (To start the app).
+2.  Run `sh run_mac.sh` (Starts the servers).
 
 *The dashboard will launch at [http://localhost:3000](http://localhost:3000)*
 
+## Manual Run (For Developers)
+
+If you prefer running via terminal/VS Code manually:
+
+**Backend:**
+```bash
+# Windows
+cd backend
+..\venv\Scripts\activate
+python -m uvicorn src.api.main:app --reload --port 8000
+
+# Mac/Linux
+cd backend
+source ../venv/bin/activate
+uvicorn src.api.main:app --reload --port 8000
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
 ## Architecture
 
-*   **Phase 1 (Universe)**: Fetches symbol lists from NSE/BSE.
-*   **Phase 2 (History)**: optimized background download of historical price data.
-*   **Phase 3 (Scanner)**: Vectorized analysis to detect breakouts relative to sliding windows.
-*   **API**: Serves JSON data to the frontend via REST endpoints.
+*   **Structure**:
+    *   `frontend/`: Next.js Web Application.
+    *   `backend/`: Python API and Data Processing Engine.
+*   **Key Components**:
+    *   `backend/src/universe`: Market data fetching.
+    *   `backend/src/analytics`: Breakout detection logic.
+    *   `backend/data`: Parquet storage (Atomic reads/writes).
 
 ## License
 
